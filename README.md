@@ -1,13 +1,36 @@
 # SplatFlow: Learning Multi-frame Optical Flow via Splatting
 This repository contains the source code for our paper:
 - SplatFlow: Learning Multi-frame Optical Flow via Splatting (IJCV 2024) | [Paper](https://arxiv.org/pdf/2306.08887.pdf)
-<img width="800" src="./asset/overview_24_0127.png">
-The code is coming soon!
+  <img src="./asset/overview_24_0127.png" width="800"/>
 
-# Requirements
+## Updates
+- [April 24, 2024] 📣 The SplatFlow v0.0.0 is now available!
+
+## Environment
+* NVIDIA 3090 GPU
+* CUDA 11.1
+* Python 3.8
+* PyTorch 1.8.2
+
+### Create a virtual environment and activate it.
 ```
 conda create -n splatflow python=3.8
 conda activate splatflow
+```
+
+### Dependencies
+```
+pip install torch==1.8.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cu111
+pip install einops==0.4.1
+pip install cupy-cuda111
+pip install pillow==9.5.0
+pip install opencv-python==4.1.2.30
+```
+
+## Quick start
+To make the model (with weights after K-finetune) infer on KITTI data, run
+```Shell
+python main.py
 ```
 
 ## Citing this Work
