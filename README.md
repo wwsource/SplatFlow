@@ -28,11 +28,11 @@ pip install opencv-python==4.1.2.30
 ```
 
 ## Quick start
-To make the model (with weights after K-finetune) infer on KITTI data, run
+To make the model (with [weights](https://pan.baidu.com/s/1v3WiEzkAXPtchVxEDu-vRw) after K-finetune) infer on KITTI data, run
 ```Shell
 python main.py
 ```
-
+Weights extraction code: sm11
 ## Citing this Work
 
 If you find our repository useful, please consider giving it a star ⭐ and citing our paper in your work:
