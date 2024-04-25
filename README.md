@@ -4,7 +4,8 @@ This repository contains the source code for our paper:
   <img src="./asset/overview_24_0127.png" width="800"/>
 
 ## Updates
-- [April 24, 2024] 📣 The SplatFlow v0.0.0 is now available!
+- [April 24, 2024] 📣 The code of SplatFlow is now available!
+- [January 02, 2024] 📣 The paper of SplatFlow is accepted by IJCV 2024!
 
 ## Environment
 * NVIDIA 3090 GPU
@@ -33,6 +34,10 @@ To make the model (with [weights](https://pan.baidu.com/s/1v3WiEzkAXPtchVxEDu-vR
 python main.py
 ```
 Weights extraction code: sm11
+
+## Acknowledgments
+We would like to thank [RAFT](https://github.com/princeton-vl/RAFT), [GMA](https://github.com/zacjiang/GMA) and [SoftSplat](https://github.com/JHLew/SoftSplat-Full) for publicly releasing their code and data.
+
 ## Citing this Work
 
 If you find our repository useful, please consider giving it a star ⭐ and citing our paper in your work:
