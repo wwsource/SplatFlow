@@ -29,11 +29,10 @@ pip install opencv-python==4.1.2.30
 ```
 
 ## Quick start
-To make the model (with [weights](https://pan.baidu.com/s/1v3WiEzkAXPtchVxEDu-vRw) after K-finetune) infer on KITTI data, run
+To make the model (with [weights](https://pan.baidu.com/s/1v3WiEzkAXPtchVxEDu-vRw&pwd=sm11) after K-finetune) infer on KITTI data, run
 ```Shell
 python main.py
 ```
-Weights extraction code: sm11
 
 ## Acknowledgments
 We would like to thank [RAFT](https://github.com/princeton-vl/RAFT), [GMA](https://github.com/zacjiang/GMA) and [SoftSplat](https://github.com/JHLew/SoftSplat-Full) for publicly releasing their code and data.
