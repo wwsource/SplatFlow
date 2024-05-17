@@ -8,19 +8,17 @@ This repository contains the source code for our paper:
 - [January 02, 2024] 📣 The paper of SplatFlow is accepted by IJCV 2024!
 
 ## Environment
+
+Our code has been successfully tested in the following environments:
+
 * NVIDIA 3090 GPU
 * CUDA 11.1
 * Python 3.8
 * PyTorch 1.8.2
-
-### Create a virtual environment and activate it.
 ```
 conda create -n splatflow python=3.8
 conda activate splatflow
-```
 
-### Dependencies
-```
 pip install torch==1.8.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cu111
 pip install einops==0.4.1
 pip install cupy-cuda111
