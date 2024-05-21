@@ -1,7 +1,7 @@
 # SplatFlow: Learning Multi-frame Optical Flow via Splatting
 This repository contains the source code for our paper:
 - SplatFlow: Learning Multi-frame Optical Flow via Splatting (IJCV 2024) | [Paper](https://arxiv.org/pdf/2306.08887.pdf)
-  <img src="./asset/github-demo-2024_0517.jpg" width="800"/>
+  ![](./asset/github-demo-2024_0517.jpg)
   <!-- <img src="./asset/odyssey_test-24_0424.jpg" width="800"/> -->
   - [x] We propose a novel MOFE framework SplatFlow designed explicitly for the single-resolution iterative two-frame backbones. 
   - [x] Compared with the original backbone, SplatFlow has significantly higher estimation accuracy, especially in occluded regions, while maintaining a high inference speed.
