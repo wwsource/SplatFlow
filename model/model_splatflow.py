@@ -1,3 +1,7 @@
+# @Project: SplatFlow
+# @Author : wangbo
+# @Time : 2024.07.03
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -7,17 +11,23 @@ from .attention import Attention
 from .softsplat import FunctionSoftsplat as forward_warping
 from .update import Update
 autocast = torch.cuda.amp.autocast
-fast_inference = True
+fast_inference = False
+import torch.distributed as dist
 
 class SplatFlow(nn.Module):
-    def __init__(self):
+    def __init__(self, config=None):
         super(SplatFlow, self).__init__()
 
         self.hdim = self.cdim = 128
         self.fnet = BasicEncoder(output_dim=256, norm_fn='instance')
         self.cnet = BasicEncoder(output_dim=self.hdim + self.cdim, norm_fn='batch')
         self.att = Attention(dim=self.cdim, heads=1, dim_head=self.cdim)
-        self.update = Update(hidden_dim=self.hdim)
+
+        if config != None and config.part_params_train:
+            for p in self.parameters():
+                p.requires_grad = False
+
+        self.update = Update(config, hidden_dim=self.hdim)
 
     def init_coord(self, fmap):
         f_shape = fmap.shape
@@ -93,14 +103,80 @@ class SplatFlow(nn.Module):
 
         return flow_predictions, mf, low, fmap1, fmap2
 
-    def infer(self, model, input_list, iters=12):
+    def Loss(self, flow_prs_01, gt_01, valid_01, flow_prs_12, gt_12, valid_12):
+
+        MAX_FLOW = 400
+
+        n_predictions = len(flow_prs_12)
+        loss = 0
+
+        valid_01 = ((valid_01 >= 0.5) & ((gt_01 ** 2).sum(dim=1).sqrt() < MAX_FLOW)).view(-1) >= 0.5
+        valid_12 = ((valid_12 >= 0.5) & ((gt_12 ** 2).sum(dim=1).sqrt() < MAX_FLOW)).view(-1) >= 0.5
+
+        for i in range(n_predictions):
+            i_weight = 0.8 ** (n_predictions - i - 1)
+            tmp_01 = ((flow_prs_01[i] - gt_01).abs().sum(dim=1)).view(-1)[valid_01]
+            tmp_12 = ((flow_prs_12[i] - gt_12).abs().sum(dim=1)).view(-1)[valid_12]
+            loss += i_weight * torch.cat([tmp_01, tmp_12]).mean()
+
+        with torch.no_grad():
+            epe = torch.sum((flow_prs_12[-1] - gt_12) ** 2, dim=1).sqrt()
+            epe = epe.view(-1)[valid_12.view(-1)]
+            epe_sum = epe.sum()
+            px1_sum = (epe < 1).float().sum()
+            px3_sum = (epe < 3).float().sum()
+            px5_sum = (epe < 5).float().sum()
+            valid_12_sum = valid_12.sum()
+
+            dist.all_reduce(epe_sum)
+            dist.all_reduce(px1_sum)
+            dist.all_reduce(px3_sum)
+            dist.all_reduce(px5_sum)
+            dist.all_reduce(valid_12_sum)
+
+            epe = epe_sum / valid_12_sum
+            px1 = px1_sum / valid_12_sum
+            px3 = px3_sum / valid_12_sum
+            px5 = px5_sum / valid_12_sum
+
+            metric_list = [
+                ['epe', epe.item()],
+                ['px1', px1.item()],
+                ['px3', px3.item()],
+                ['px5', px5.item()]]
+
+        return loss, metric_list
+
+    def infer(self, model, input_list, iters=12, gt_list=None, mf_01=None, low_01=None):
 
         img0, img1, img2 = input_list
 
-        flow_prs_01, mf_01, low_01, fmap0, fmap1 = model(img0, img1, iters=iters)
+        if img0 == None:
+            flow_prs_12, mf_12, low_12, fmap1, fmap2 = model(img1, img2, iters=iters)
+            return flow_prs_12
+
+        if not (gt_list == None and mf_01 != None and low_01 != None):
+            flow_prs_01, mf_01, low_01, fmap0, fmap1 = model(img0, img1, iters=iters)
 
         mf_t = forward_warping(mf_01, low_01)
 
         flow_prs_12, mf_12, low_12, fmap1, fmap2 = model(img1, img2, iters=iters, mf_t=mf_t)
 
-        return flow_prs_12[-1],
+        if gt_list != None:  # training mode
+            gt_01, valid_01, gt_12, valid_12 = gt_list
+            loss, metric_list = self.Loss(flow_prs_01, gt_01, valid_01, flow_prs_12, gt_12, valid_12)
+            return loss, metric_list
+
+        return flow_prs_12
+
+    def training_infer(self, model, step_data, device):
+
+        img0, img1, img2, gt_01, valid_01, gt_12, valid_12 = [x.to(device) for x in step_data]
+
+        loss = model.module.infer(
+            model,
+            input_list=[img0, img1, img2],
+            gt_list=[gt_01, valid_01, gt_12, valid_12])
+
+        return loss
+

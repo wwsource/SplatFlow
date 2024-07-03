@@ -1,3 +1,7 @@
+# @Project: SplatFlow
+# @Author : wangbo
+# @Time : 2024.07.03
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -65,7 +69,7 @@ class FlowHead(nn.Module):
         return self.conv2(self.relu(self.conv1(x)))
 
 class Update(nn.Module):
-    def __init__(self, hidden_dim=128):
+    def __init__(self, config=None, hidden_dim=128):
         super().__init__()
         self.encoder = BasicMotionEncoder()
 
@@ -77,6 +81,10 @@ class Update(nn.Module):
             nn.Conv2d(256, 64 * 9, 1, padding=0))
 
         self.aggregator = Aggregate(dim=128, dim_head=128, heads=1)
+
+        if config != None and config.part_params_train:
+            for p in self.parameters():
+                p.requires_grad = False
 
         self.gru_sp = SepConvGRU(hidden_dim=hidden_dim, input_dim=128 + hidden_dim + hidden_dim * 2)
         self.flow_head_sp = FlowHead(hidden_dim, hidden_dim=256)
