@@ -52,9 +52,17 @@ data/
 │  ├─ frames_finalpass/
 │  └─ optical_flow/
 │
+├─ Sintel/
+│  ├─ training/
+│  └─ test/
+│
 ├─ KITTI/
 │  ├─ training/
 │  └─ testing/
+│
+├─ HD1k/
+│  ├─ hd1k_input/
+│  └─ hd1k_flow_gt/
 │
 └─ demo/
    ├─ image/
