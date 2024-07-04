@@ -13,7 +13,9 @@ from model.util.augmentor import FlowAugmentor, SparseFlowAugmentor
 
 data_root = '/data1/wangbo/data/'
 things_root = data_root + 'FlyingThings3D'
+sintel_root = data_root + 'Sintel'
 kitti_root = data_root + 'KITTI'
+hd1k_root = data_root + 'HD1k'
 
 class FlowDataset(Dataset):
     def __init__(self, aug_params=None, sparse=False):
@@ -155,6 +157,30 @@ class Things(FlowDataset):
                             self.image_list += [[images[6], images[5], images[4]]]
                             self.flow_list += [[None, flows[5]]]
 
+class Sintel(FlowDataset):
+    def __init__(self, aug_params=None, root=sintel_root, split='train', ptype='clean'):
+        super(Sintel, self).__init__(aug_params)
+
+        split_dir = {'train': 'training', 'test': 'test'}[split]
+        ptype_dir = {'clean': 'clean', 'final': 'final'}[ptype]
+
+        image_root = osp.join(root, split_dir, ptype_dir)
+        flow_root = osp.join(root, split_dir, 'flow')
+
+        for scene in os.listdir(image_root):
+            image_list = sorted(glob(osp.join(image_root, scene, '*.png')))
+            image_list = [img.replace('\\', '/') for img in image_list]
+
+            for i in range(len(image_list) - 2):
+                self.image_list += [[image_list[i], image_list[i + 1], image_list[i + 2]]]
+            if split == 'train':
+                flow_list = sorted(glob(osp.join(flow_root, scene, '*.flo')))
+                flow_list = [flow.replace('\\', '/') for flow in flow_list]
+                self.flow_list += [[f1, f2] for f1, f2 in zip(flow_list[:-1], flow_list[1:])]
+
+            elif split == 'test':
+                self.flow_list += [[None, None] for _ in range(len(image_list) - 2)]
+
 class KITTI(FlowDataset):
     def __init__(self, aug_params=None, root=kitti_root, split='train'):
         super(KITTI, self).__init__(aug_params, sparse=True)
@@ -181,6 +207,24 @@ class KITTI(FlowDataset):
         elif split == 'test':
             self.flow_list += [[None, None] for _ in range(len(self.image_list))]
 
+class HD1K(FlowDataset):
+    def __init__(self, aug_params=None, root=hd1k_root):
+        super(HD1K, self).__init__(aug_params, sparse=True)
+
+        seq_ix = 0
+        while 1:
+            flows = sorted(glob(os.path.join(root, 'hd1k_flow_gt', 'flow_occ/%06d_*.png' % seq_ix)))
+            images = sorted(glob(os.path.join(root, 'hd1k_input', 'image_2/%06d_*.png' % seq_ix)))
+
+            if len(flows) == 0:
+                break
+
+            for i in range(len(flows) - 2):
+                self.image_list += [[images[i], images[i + 1], images[i + 2]]]
+                self.flow_list += [[flows[i], flows[i + 1]]]
+
+            seq_ix += 1
+
 from contextlib import contextmanager
 @contextmanager
 def torch_distributed_zero_first(local_rank: int):
@@ -201,6 +245,27 @@ def fetch_dataloader(config):
             things_clean = Things(aug_params, split='train', ptype='clean')
             things_final = Things(aug_params, split='train', ptype='final')
             dataset = things_clean + things_final
+
+        elif config.stage == 'sintel':
+            aug_params = {'crop_size': config.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
+            things_clean = Things(aug_params, split='train', ptype='clean')
+            sintel_clean = Sintel(aug_params, split='train', ptype='clean')
+            sintel_final = Sintel(aug_params, split='train', ptype='final')
+            aug_params = {'crop_size': config.image_size, 'min_scale': -0.3, 'max_scale': 0.5, 'do_flip': True}
+            kitti = KITTI(aug_params, split='train')
+            aug_params = {'crop_size': config.image_size, 'min_scale': -0.5, 'max_scale': 0.2, 'do_flip': True}
+            hd1k = HD1K(aug_params)
+            dataset = 100 * sintel_clean + 100 * sintel_final + 200 * kitti + 5 * hd1k + 1 * things_clean
+
+        elif config.stage == 'kitti':
+            aug_params = {'crop_size': config.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
+            things_clean = Things(aug_params, split='train', ptype='clean')
+            sintel_clean = Sintel(aug_params, split='train', ptype='clean')
+            aug_params = {'crop_size': config.image_size, 'min_scale': -0.3, 'max_scale': 0.5, 'do_flip': False}
+            kitti = KITTI(aug_params, split='train')
+            aug_params = {'crop_size': config.image_size, 'min_scale': -0.5, 'max_scale': 0.2, 'do_flip': False}
+            hd1k = HD1K(aug_params)
+            dataset = 20 * sintel_clean + 420 * kitti + 10 * hd1k + things_clean
 
         return dataset
 

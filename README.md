@@ -78,6 +78,16 @@ data/
   bash script/train_things.sh
   ```
   
+* Train SplatFlow under the S-finetune training process.
+  ```bash
+  bash script/train_sintel.sh
+  ```
+
+* Train SplatFlow under the K-finetune training process.
+  ```bash
+  bash script/train_kitti.sh
+  ```
+  
 ## Testing
 
 * Test SplatFlow on Things.
