@@ -173,10 +173,10 @@ class SplatFlow(nn.Module):
 
         img0, img1, img2, gt_01, valid_01, gt_12, valid_12 = [x.to(device) for x in step_data]
 
-        loss = model.module.infer(
+        loss, metric_list = model.module.infer(
             model,
             input_list=[img0, img1, img2],
             gt_list=[gt_01, valid_01, gt_12, valid_12])
 
-        return loss
+        return loss, metric_list
 
