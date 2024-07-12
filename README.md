@@ -34,9 +34,9 @@ pip install opencv-python==4.1.2.30
 
 Download the weights below and put them in the `exp/0-pretrain` path. 
 
-| Model     | Training<br/>process | Weights                                                                             | Comments                  |
-|-----------|----------------------|-------------------------------------------------------------------------------------|---------------------------|
-| SplatFlow | K-finetune           | [splatflow_kitti_50k.pth](https://pan.baidu.com/s/1JDPCexLqlj-ULLt1TPsGxA&pwd=wang) | Best performance on KITTI |
+| Model     | Training process | Weights                                                                             | Comments                  |
+|-----------|------------------|-------------------------------------------------------------------------------------|---------------------------|
+| SplatFlow | K-finetune       | [splatflow_kitti_50k.pth](https://pan.baidu.com/s/1JDPCexLqlj-ULLt1TPsGxA&pwd=wang) | Best performance on KITTI |
 
 
 ## Demo
