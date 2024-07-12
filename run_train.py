@@ -1,3 +1,4 @@
+# @File: run_train.py
 # @Project: SplatFlow
 # @Author : wangbo
 # @Time : 2024.07.03

@@ -1,3 +1,8 @@
+# @File: train_kitti.sh
+# @Project: SplatFlow
+# @Author : wangbo
+# @Time : 2024.07.03
+
 export CUDA_VISIBLE_DEVICES="0, 1, 2"
 python -m torch.distributed.launch --nproc_per_node 3 run_train.py \
 --exp_name train_kitti \

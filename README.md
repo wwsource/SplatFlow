@@ -1,3 +1,11 @@
+[//]: # (@File: README.md)
+
+[//]: # (@Project: SplatFlow)
+
+[//]: # (@Author : wangbo)
+
+[//]: # (@Time : 2024.07.12)
+
 # SplatFlow: Learning Multi-frame Optical Flow via Splatting
 This repository contains the source code for our paper:
 - SplatFlow: Learning Multi-frame Optical Flow via Splatting (IJCV 2024) | [Paper](https://arxiv.org/pdf/2306.08887.pdf)
