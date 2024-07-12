@@ -48,17 +48,15 @@ Download the weights below and put them in the `exp/0-pretrain` path.
 
 ## Datasets
 
-To train / test SplatFlow, you will need to download the required datasets.
+To train / test SplatFlow, you will need to download the required datasets and update `data_root` in `data/dataset.py`.
 
 * [FlyingThings3D](https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html)
 * [Sintel](http://sintel.is.tue.mpg.de/)
 * [KITTI2015](http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=flow)
 * [HD1K](http://hci-benchmark.iwr.uni-heidelberg.de/)
 
-You can create symbolic links to wherever the datasets are downloaded in the `data` folder.
-
 ```text
-data/
+data_root/
 │
 ├─ FlyingThings3D/
 │  ├─ frames_cleanpass/

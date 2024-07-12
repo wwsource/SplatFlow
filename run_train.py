@@ -9,7 +9,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 import time
 
 from model.model_splatflow import SplatFlow
-from data.dataset_multi_frame import *
+from data.dataset import *
 
 def get_stamp(second):
     m, s = divmod(second, 60)
