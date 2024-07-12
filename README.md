@@ -7,8 +7,9 @@ This repository contains the source code for our paper:
   - [x] At the time of submission, our SplatFlow achieved state-of-the-art results on both the [Sintel](http://sintel.is.tue.mpg.de/quant?metric_id=0&selected_pass=1) and [KITTI2015](https://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=flow) benchmarks, especially with surprisingly significant 19.4% error reductions compared to the previous best result submitted on the Sintel benchmark.
 
 ## Updates
-- [April 24, 2024] 📣 The code of SplatFlow is now available!
-- [January 02, 2024] 📣 The paper of SplatFlow is accepted by IJCV 2024!
+
+- [2024.04.24] 📣 The code of SplatFlow is now available!
+- [2024.01.02] 📣 The paper of SplatFlow is accepted by IJCV 2024!
 
 ## Environment
 
@@ -29,11 +30,21 @@ pip install pillow==9.5.0
 pip install opencv-python==4.1.2.30
 ```
 
-## Quick start
-To make the model (with [weights](https://pan.baidu.com/s/1v3WiEzkAXPtchVxEDu-vRw&pwd=sm11) after K-finetune) infer on KITTI data, run
-```Shell
-bash script/demo.sh
-```
+## Trained Weights
+
+Download the weights below and put them in the `exp/0-pretrain` path. 
+
+| Model     | Training<br/>process | Weights                                                                             | Comments                  |
+|-----------|----------------------|-------------------------------------------------------------------------------------|---------------------------|
+| SplatFlow | K-finetune           | [splatflow_kitti_50k.pth](https://pan.baidu.com/s/1JDPCexLqlj-ULLt1TPsGxA&pwd=wang) | Best performance on KITTI |
+
+
+## Demo
+
+* Quick start.
+  ```Shell
+  bash script/demo.sh
+  ```
 
 ## Datasets
 
