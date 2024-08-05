@@ -44,7 +44,7 @@ Download the weights below and put them in the `exp/0-pretrain` path.
 
 | Model     | Training process | Weights                                                                             | Comments                  |
 |-----------|------------------|-------------------------------------------------------------------------------------|---------------------------|
-| SplatFlow | K-finetune       | [splatflow_kitti_50k.pth](https://pan.baidu.com/s/1JDPCexLqlj-ULLt1TPsGxA&pwd=wang) | Best performance on KITTI |
+| SplatFlow | K-finetune       | splatflow_kitti_50k.pth<br/>[Huggingface](https://huggingface.co/wwcreator/SplatFlow) & [BaiduNetdisk](https://pan.baidu.com/s/1JDPCexLqlj-ULLt1TPsGxA&pwd=wang) | Best performance on KITTI |
 
 
 ## Demo
