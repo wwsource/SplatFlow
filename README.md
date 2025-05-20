@@ -126,10 +126,12 @@ If you find our repository useful, please consider giving it a star ⭐ and citi
 
 ```bibtex
 @article{wang2024splatflow,
-  title={SplatFlow: Learning Multi-frame Optical Flow via Splatting},
+  title={SplatFlow: Learning multi-frame optical flow via splatting},
   author={Wang, Bo and Zhang, Yifan and Li, Jian and Yu, Yang and Sun, Zhenping and Liu, Li and Hu, Dewen},
   journal={International Journal of Computer Vision},
-  pages={1--23},
+  volume={132},
+  number={8},
+  pages={3023--3045},
   year={2024},
   publisher={Springer}
 }
